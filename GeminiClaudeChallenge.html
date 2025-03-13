@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-Workout Meal Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, button {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%; /* Full width for dropdowns */
+            box-sizing: border-box; /* To include padding in width */
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #mealSuggestion {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        #mealSuggestion h2, #mealSuggestion h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .meal-detail {
+            margin-bottom: 10px;
+        }
+        .meal-detail strong {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Post-Workout Meal Generator</h1>
+
+    <div class="form-group">
+        <label for="workoutType">Select Workout Type:</label>
+        <select id="workoutType">
+            <option value="weightLifting">Weight Lifting</option>
+            <option value="swimming">Swimming</option>
+            <option value="biking">Biking</option>
+            <option value="running">Running</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="workoutIntensity">Select Workout Intensity:</label>
+        <select id="workoutIntensity">
+            <option value="light">Light</option>
+            <option value="moderate">Moderate</option>
+            <option value="intense">Intense</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="mealTime">Meal Time (How soon after workout?):</label>
+        <select id="mealTime">
+            <option value="immediate">Immediate (within 30 min)</option>
+            <option value="delayed">Delayed (1-2 hours after)</option>
+        </select>
+    </div>
+
+    <button onclick="getMealSuggestion()">Get Meal Suggestion</button>
+
+    <div id="mealSuggestion">
+        <h2>Suggested Meal:</h2>
+        <div id="mealDetails">
+            <p>Select your workout type, intensity, and meal time and click the button for a meal suggestion.</p>
+        </div>
+    </div>
+
+    <script>
+        const availableIngredients = [
+            "eggs", "tofu", "salmon", "lentils", "red beans", "black beans", "walnuts", "pecans",
+            "whole grain pasta", "potatoes", "whole grain bread", "sweet potatoes", "bananas", "apples",
+            "spinach", "onions", "broccoli", "peanut butter", "brown rice", "spelt bran", "avocados",
+            "feta cheese", "oat milk", "lemon juice", "mushrooms", "quinoa", "millet", "bulgur"
+        ];
+
+        const mealSuggestions = {
+            weightLifting: {
+                highProtein: [
+                    {
+                        title: "Protein Power Bowl",
+                        ingredients: ["quinoa", "tofu", "black beans", "broccoli", "avocados"],
+                        instructions: "Cook quinoa. Sauté tofu and broccoli. Combine with black beans and avocado.",
+                        benefits: "High protein for muscle repair."
+                    },
+                    {
+                        title: "Salmon & Sweet Potato Plate",
+                        ingredients: ["salmon", "sweet potatoes", "spinach", "lemon juice"],
+                        instructions: "Bake salmon with lemon juice. Roast sweet potatoes. Serve with spinach.",
+                        benefits: "Protein and omega-3s for recovery."
+                    }
+                ],
+                balancedRecovery: [
+                    {
+                        title: "Egg & Sweet Potato Hash",
+                        ingredients: ["eggs", "sweet potatoes", "onions", "spinach"],
+                        instructions: "Make a sweet potato hash with onions. Top with scrambled eggs and spinach.",
+                        benefits: "Balanced protein and carbs for recovery."
+                    },
+                    {
+                        title: "Lentil & Brown Rice Bowl",
+                        ingredients: ["lentils", "brown rice", "broccoli", "feta cheese"],
+                        instructions: "Cook lentils and brown rice. Steam broccoli. Combine and top with feta.",
+                        benefits: "Plant-based protein and complex carbs."
+                    }
+                ]
+            },
+            swimming: {
+                energyRestore: [
+                    {
+                        title: "Swimmer's Salmon Quinoa Bowl",
+                        ingredients: ["quinoa", "salmon", "avocados", "spinach", "lemon juice"],
+                        instructions: "Cook quinoa. Grill salmon with lemon juice. Combine with avocado and spinach.",
+                        benefits: "Energy and omega-3s for swimmers."
+                    },
+                    {
+                        title: "Pasta & Tofu with Broccoli",
+                        ingredients: ["whole grain pasta", "tofu", "broccoli"],
+                        instructions: "Cook pasta. Sauté tofu and broccoli. Toss together.",
+                        benefits: "Carb and protein refuel after swimming."
+                    }
+                ],
+                lightRecovery: [
+                    {
+                        title: "Peanut Butter Banana Bread",
+                        ingredients: ["whole grain bread", "peanut butter", "bananas"],
+                        instructions: "Toast bread. Spread with peanut butter and banana slices.",
+                        benefits: "Quick energy and light protein."
+                    },
+                    {
+                        title: "Egg & Avocado Toast",
+                        ingredients: ["whole grain bread", "avocados", "eggs"],
+                        instructions: "Toast bread. Top with mashed avocado and poached egg.",
+                        benefits: "Easy and balanced recovery snack."
+                    }
+                ]
+            },
+            biking: {
+                enduranceRecovery: [
+                    {
+                        title: "Cyclist's Black Bean Rice Bowl",
+                        ingredients: ["brown rice", "black beans", "sweet potatoes", "avocados"],
+                        instructions: "Cook rice. Roast sweet potatoes. Combine with black beans and avocado.",
+                        benefits: "High carb for glycogen replenishment."
+                    },
+                    {
+                        title: "Pasta with Salmon & Broccoli",
+                        ingredients: ["whole grain pasta", "salmon", "broccoli"],
+                        instructions: "Cook pasta. Grill salmon. Steam broccoli. Toss together.",
+                        benefits: "Carbs and protein for endurance cycling."
+                    }
+                ],
+                moderateRecovery: [
+                    {
+                        title: "Sweet Potato Tofu Bowl",
+                        ingredients: ["sweet potatoes", "tofu", "broccoli", "walnuts"],
+                        instructions: "Roast sweet potatoes. Sauté tofu and broccoli. Top with walnuts.",
+                        benefits: "Balanced recovery for moderate biking."
+                    },
+                    {
+                        title: "Banana Peanut Butter Sandwich",
+                        ingredients: ["bananas", "peanut butter", "whole grain bread"],
+                        instructions: "Spread peanut butter on bread, add banana slices.",
+                        benefits: "Quick carb and protein snack."
+                    }
+                ]
+            },
+            running: {
+                intensiveRecovery: [
+                    {
+                        title: "Runner's Salmon Quinoa Bowl",
+                        ingredients: ["quinoa", "salmon", "sweet potatoes", "spinach"],
+                        instructions: "Cook quinoa. Grill salmon. Roast sweet potatoes. Serve with spinach.",
+                        benefits: "Complete protein and complex carbs for runners."
+                    },
+                    {
+                        title: "Tofu & Brown Rice with Broccoli",
+                        ingredients: ["brown rice", "tofu", "broccoli", "black beans"],
+                        instructions: "Cook rice. Sauté tofu and broccoli. Combine with black beans.",
+                        benefits: "Higher carbs for glycogen restore after running."
+                    }
+                ],
+                quickRecovery: [
+                    {
+                        title: "Banana & Peanut Butter Toast",
+                        ingredients: ["bananas", "peanut butter", "whole grain bread"],
+                        instructions: "Toast bread. Spread peanut butter, add banana slices.",
+                        benefits: "Fast carbs and protein for quick recovery."
+                    },
+                    {
+                        title: "Egg Avocado Spinach Toast",
+                        ingredients: ["whole grain bread", "avocados", "eggs", "spinach"],
+                        instructions: "Toast bread. Top with avocado, egg, and spinach.",
+                        benefits: "Balanced nutrients for light run recovery."
+                    }
+                ]
+            }
+        };
+
+        function getMealSuggestion() {
+            const workoutType = document.getElementById("workoutType").value;
+            const workoutIntensity = document.getElementById("workoutIntensity").value;
+            const mealTime = document.getElementById("mealTime").value;
+            const mealDetailsDiv = document.getElementById("mealDetails");
+            mealDetailsDiv.innerHTML = ''; // Clear previous suggestion
+
+            let mealCategory;
+            if (workoutType === 'weightLifting') {
+                mealCategory = (workoutIntensity === 'intense') ? 'highProtein' : 'balancedRecovery';
+            } else if (workoutType === 'swimming') {
+                mealCategory = (workoutIntensity === 'light') ? 'lightRecovery' : 'energyRestore';
+            } else if (workoutType === 'biking') {
+                mealCategory = (workoutIntensity === 'intense') ? 'enduranceRecovery' : 'moderateRecovery';
+            } else if (workoutType === 'running') {
+                mealCategory = (workoutIntensity === 'intense') ? 'intensiveRecovery' : 'quickRecovery';
+            }
+
+            const mealsForCategory = mealSuggestions[workoutType][mealCategory];
+
+            if (mealsForCategory && mealsForCategory.length > 0) {
+                const randomIndex = Math.floor(Math.random() * mealsForCategory.length);
+                const suggestedMeal = mealsForCategory[randomIndex];
+
+                let introText = `<p>For a ${workoutIntensity} intensity ${workoutType} workout, consider this meal ${mealTime === 'immediate' ? 'immediately after your workout' : 'within 1-2 hours after your workout'} to support recovery:</p>`;
+                mealDetailsDiv.innerHTML += introText;
+
+                const mealTitle = document.createElement('h3');
+                mealTitle.textContent = suggestedMeal.title;
+                mealDetailsDiv.appendChild(mealTitle);
+
+                const ingredientsDetail = document.createElement('div');
+                ingredientsDetail.className = 'meal-detail';
+                ingredientsDetail.innerHTML = `<strong>Ingredients:</strong> ${suggestedMeal.ingredients.join(', ')}`;
+                mealDetailsDiv.appendChild(ingredientsDetail);
+
+                const instructionsDetail = document.createElement('div');
+                instructionsDetail.className = 'meal-detail';
+                instructionsDetail.innerHTML = `<strong>Instructions:</strong> ${suggestedMeal.instructions}`;
+                mealDetailsDiv.appendChild(instructionsDetail);
+
+                const benefitsDetail = document.createElement('div');
+                benefitsDetail.className = 'meal-detail';
+                benefitsDetail.innerHTML = `<strong>Benefits:</strong> ${suggestedMeal.benefits}`;
+                mealDetailsDiv.appendChild(benefitsDetail);
+
+                if (mealTime === 'immediate') {
+                    const timingNote = document.createElement('p');
+                    timingNote.innerHTML = '<strong>Timing Note:</strong> For best results, try to eat this meal within 30-45 minutes after your workout.';
+                    mealDetailsDiv.appendChild(timingNote);
+                }
+
+            } else {
+                mealDetailsDiv.innerHTML = "<p>No meal suggestions found for this workout type and intensity.</p>";
+            }
+        }
+    </script>
+
+</body>
+</html>
